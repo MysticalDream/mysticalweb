@@ -3,12 +3,14 @@ package com.mysticaldream.glutemo.channel;
 import com.mysticaldream.glutemo.concurrent.AbstractTaskLoopExecutor;
 import com.mysticaldream.glutemo.promise.ChannelPromise;
 import lombok.extern.slf4j.Slf4j;
+import org.jctools.queues.MpscUnboundedArrayQueue;
 
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -28,7 +30,8 @@ public class NioReactor extends AbstractTaskLoopExecutor implements Reactor {
 
 
     public NioReactor(ReactorGroup parent, Executor executor) {
-        super(executor);
+//        super(new ConcurrentLinkedQueue<>(), executor);
+        super(new MpscUnboundedArrayQueue<>(1024), executor);
         this.parent = parent;
     }
 
@@ -44,7 +47,7 @@ public class NioReactor extends AbstractTaskLoopExecutor implements Reactor {
     @Override
     public void run() {
         while (!isShutdown()) {
-            log.info("selecting");
+            log.trace("selecting");
             try {
 
                 int selectedCount;
@@ -56,7 +59,7 @@ public class NioReactor extends AbstractTaskLoopExecutor implements Reactor {
                     selectedCount = selector.select();
                 }
 
-                log.info("select count {}", selectedCount);
+                log.trace("select count {}", selectedCount);
 
                 wakeupCounter.set(0);
 
@@ -71,11 +74,10 @@ public class NioReactor extends AbstractTaskLoopExecutor implements Reactor {
 
                 processTasks();
 
-
             } catch (IOException e) {
-                log.error("出现IO错误", e);
+                log.error("an IO error occurred", e);
             } catch (Exception e) {
-                log.error("出现异常", e);
+                log.error("exception", e);
             }
         }
     }
