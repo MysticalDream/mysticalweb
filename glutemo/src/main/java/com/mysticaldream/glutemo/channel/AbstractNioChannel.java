@@ -1,8 +1,7 @@
 package com.mysticaldream.glutemo.channel;
 
-import com.mysticaldream.glutemo.channel.handler.DefaultChannelPipeline;
-import com.mysticaldream.glutemo.channel.handler.ChannelPipeline;
 import com.mysticaldream.glutemo.promise.ChannelPromise;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -14,6 +13,7 @@ import java.nio.channels.SelectionKey;
  *
  * @author MysticalDream
  */
+@Slf4j
 public abstract class AbstractNioChannel {
 
     private SelectableChannel sc;
@@ -111,7 +111,23 @@ public abstract class AbstractNioChannel {
      *
      * @throws IOException
      */
-    public abstract void close() throws IOException;
+    public void close() {
+        pipeline().close();
+    }
+
+    public void close(ChannelPromise channelPromise) {
+        pipeline().close(channelPromise);
+    }
+
+    void close0(ChannelPromise channelPromise) throws IOException {
+        close0();
+        channelPromise.resolve(channelPromise);
+    }
+
+    void close0() throws IOException {
+        javaChannel().close();
+    }
+
 
     public ChannelPipeline pipeline() {
         return channelPipeline;
@@ -134,4 +150,5 @@ public abstract class AbstractNioChannel {
     public SelectionKey getSelectionKey() {
         return selectionKey;
     }
+
 }
