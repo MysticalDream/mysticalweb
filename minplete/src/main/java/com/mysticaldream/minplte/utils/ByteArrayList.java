@@ -54,7 +54,7 @@ public class ByteArrayList {
         if ((offset | length | (offset + length) | (bytes.length - (offset + length))) < 0) {
             throw new IndexOutOfBoundsException();
         }
-        for (int i = offset; i < length; i++) {
+        for (int i = offset, len = offset + length; i < len; i++) {
             add(bytes[i]);
         }
     }
@@ -64,7 +64,7 @@ public class ByteArrayList {
      */
     public void clear() {
         size = 0;
-        data = null;
+        data = NULL_BYTE_ARRAY;
     }
 
 
