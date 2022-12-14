@@ -1,6 +1,7 @@
-package com.mysticaldream.glutemo.channel.handler;
+package com.mysticaldream.glutemo.channel;
 
-import com.mysticaldream.glutemo.channel.AbstractNioChannel;
+import com.mysticaldream.glutemo.channel.handler.ChannelInHandler;
+import com.mysticaldream.glutemo.channel.handler.ChannelOutHandler;
 import com.mysticaldream.glutemo.concurrent.AbstractTaskLoopExecutor;
 import com.mysticaldream.glutemo.promise.ChannelPromise;
 import lombok.extern.slf4j.Slf4j;
@@ -182,7 +183,7 @@ public abstract class AbstractChannelHandlerContext implements ChannelHandlerCon
                 nextOutHandler.invokeWrite0(msg, channelPromise);
             }
         } else {
-            //TODO 不用每次都唤醒，只有flush的时候才需要,实现lazyExecute
+            //TODO 不用每次都唤醒，只有flush的时候才需要,懒刷新
             taskLoopExecutor1.execute(() -> {
                 if (flush) {
                     nextOutHandler.invokeWriteAndFlush(msg, channelPromise);
@@ -231,6 +232,36 @@ public abstract class AbstractChannelHandlerContext implements ChannelHandlerCon
         }
     }
 
+    @Override
+    public ChannelPromise close() {
+        return close(ChannelPromise.newChannelPromise(channel(), getTaskLoopExecutor()));
+    }
+
+    @Override
+    public ChannelPromise close(ChannelPromise promise) {
+        invokeClose(findNextOutHandler(OUT), promise);
+        return promise;
+    }
+
+    public static void invokeClose(AbstractChannelHandlerContext nextHandlerContext, ChannelPromise promise) {
+        if (nextHandlerContext != null) {
+            AbstractTaskLoopExecutor loopExecutor = nextHandlerContext.getTaskLoopExecutor();
+            if (loopExecutor.inLoop()) {
+                nextHandlerContext.invokeClose0(promise);
+            } else {
+                loopExecutor.execute(() -> nextHandlerContext.invokeClose0(promise));
+            }
+        }
+    }
+
+    private void invokeClose0(ChannelPromise promise) {
+        try {
+            ((ChannelOutHandler) getHandler()).close(this, promise);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
 
     @Override
     public ChannelHandlerContext propagateExceptionCaughtEvent(Throwable throwable) {
@@ -257,7 +288,7 @@ public abstract class AbstractChannelHandlerContext implements ChannelHandlerCon
             ((ChannelInHandler) getHandler()).exceptionCaught(this, throwable);
         } catch (Exception e) {
             if (log.isDebugEnabled()) {
-                log.debug("处理异常时出现异常", e);
+                log.debug("exception", e);
             }
         }
     }
