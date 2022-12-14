@@ -77,7 +77,7 @@ public class NioSocketChannel extends AbstractNioChannel {
         byteArrayList.clear();
 
         if (readByte == -1) {
-            close();
+            close0();
 //            throw new IOException("通道到达流的结尾");
         }
 
@@ -163,7 +163,7 @@ public class NioSocketChannel extends AbstractNioChannel {
             if (data instanceof ByteBuffer) {
                 writeCompleted = flushByteBuffer(((ByteBuffer) data), outBuffer.channelPromise);
             } else {
-                log.warn("还没支持其他类型 {} ", data.getClass());
+                log.warn("{} type is not supported", data.getClass());
                 throw new InvalidParameterException("不支持的类型 " + data.getClass());
             }
             if (writeCompleted) {
@@ -175,9 +175,7 @@ public class NioSocketChannel extends AbstractNioChannel {
         }
 
         if (cancelWrite) {
-
             SelectionKey selectionKey = getSelectionKey();
-
             if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) != 0) {
                 disinclineWrite(selectionKey);
             }
@@ -234,11 +232,6 @@ public class NioSocketChannel extends AbstractNioChannel {
         return socketChannel.isOpen() && socketChannel.isConnected();
     }
 
-
-    @Override
-    public void close() throws IOException {
-        javaChannel().close();
-    }
 
     @Override
     public SocketChannel javaChannel() {
