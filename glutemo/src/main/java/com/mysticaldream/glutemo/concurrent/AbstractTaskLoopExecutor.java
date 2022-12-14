@@ -1,6 +1,6 @@
 package com.mysticaldream.glutemo.concurrent;
 
-import java.util.Deque;
+import java.util.Queue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -9,14 +9,19 @@ import java.util.concurrent.LinkedBlockingDeque;
  */
 public abstract class AbstractTaskLoopExecutor extends ExecutorServiceAdaptor implements TaskLoopExecutor {
 
-    private Deque<Runnable> tasks = new LinkedBlockingDeque<>();
+    private Queue<Runnable> tasks;
 
     private Executor executor;
 
     private volatile Thread thread;
 
-    public AbstractTaskLoopExecutor(Executor executor) {
+    public AbstractTaskLoopExecutor(Queue<Runnable> tasks, Executor executor) {
+        this.tasks = tasks;
         this.executor = executor;
+    }
+
+    public AbstractTaskLoopExecutor(Executor executor) {
+        this(new LinkedBlockingDeque<>(), executor);
     }
 
     public void startTaskLoop() {
@@ -45,7 +50,7 @@ public abstract class AbstractTaskLoopExecutor extends ExecutorServiceAdaptor im
         wakeup(inLoop);
     }
 
-    protected void processTasks() {
+    protected void processTasks() throws InterruptedException {
         Runnable r;
         while ((r = tasks.poll()) != null) {
             r.run();
@@ -55,5 +60,9 @@ public abstract class AbstractTaskLoopExecutor extends ExecutorServiceAdaptor im
     @Override
     public boolean inLoop() {
         return thread == Thread.currentThread();
+    }
+
+    public Queue<Runnable> tasks() {
+        return tasks;
     }
 }
