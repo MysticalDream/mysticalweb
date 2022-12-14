@@ -47,11 +47,17 @@ public class NioReactorGroup extends ExecutorServiceAdaptor implements ReactorGr
     @Override
     public Reactor next() {
 
-        if (pollCounter.get() == num) {
-            pollCounter.set(0);
-        }
+//        if (pollCounter.get() == num) {
+//            pollCounter.set(0);
+//        }
 
-        return reactor[pollCounter.getAndIncrement()];
+        return reactor[pollCounter.getAndAccumulate(num - 1, (prev, x) -> {
+            if (prev == x) {
+                return 0;
+            } else {
+                return ++prev;
+            }
+        })];
     }
 
     @Override
