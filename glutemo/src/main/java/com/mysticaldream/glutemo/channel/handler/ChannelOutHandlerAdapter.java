@@ -1,5 +1,7 @@
 package com.mysticaldream.glutemo.channel.handler;
 
+import com.mysticaldream.glutemo.channel.AbstractChannelHandlerContext;
+import com.mysticaldream.glutemo.channel.ChannelHandlerContext;
 import com.mysticaldream.glutemo.promise.ChannelPromise;
 
 /**
@@ -14,5 +16,10 @@ public class ChannelOutHandlerAdapter implements ChannelOutHandler {
     @Override
     public void flush(ChannelHandlerContext context) throws Exception {
         context.flush();
+    }
+
+    @Override
+    public void close(AbstractChannelHandlerContext context, ChannelPromise channelPromise) {
+        context.close(channelPromise);
     }
 }
