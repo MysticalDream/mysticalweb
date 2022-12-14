@@ -19,4 +19,8 @@ public class ChannelPromise extends Promise<ChannelPromise> {
     public static ChannelPromise newChannelPromise(AbstractNioChannel channel, AbstractTaskLoopExecutor executor) {
         return new ChannelPromise(channel, executor);
     }
+
+    public AbstractNioChannel channel() {
+        return channel;
+    }
 }
