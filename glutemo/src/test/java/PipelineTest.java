@@ -1,7 +1,7 @@
 import com.mysticaldream.glutemo.channel.AbstractNioChannel;
 import com.mysticaldream.glutemo.channel.NioReactor;
 import com.mysticaldream.glutemo.channel.NioServerSocketChannel;
-import com.mysticaldream.glutemo.channel.handler.ChannelHandlerContext;
+import com.mysticaldream.glutemo.channel.ChannelHandlerContext;
 import com.mysticaldream.glutemo.channel.handler.ChannelInHandler;
 import com.mysticaldream.glutemo.pool.DefaultThreadFactory;
 import com.mysticaldream.glutemo.pool.SimpleExecutor;

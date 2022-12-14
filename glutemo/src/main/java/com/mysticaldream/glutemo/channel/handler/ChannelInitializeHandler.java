@@ -1,6 +1,7 @@
 package com.mysticaldream.glutemo.channel.handler;
 
 import com.mysticaldream.glutemo.channel.AbstractNioChannel;
+import com.mysticaldream.glutemo.channel.ChannelHandlerContext;
 
 /**
  * @author MysticalDream

@@ -1,6 +1,6 @@
-package com.mysticaldream.glutemo.channel.handler;
+package com.mysticaldream.glutemo.channel;
 
-import com.mysticaldream.glutemo.channel.AbstractNioChannel;
+import com.mysticaldream.glutemo.channel.handler.*;
 import com.mysticaldream.glutemo.concurrent.SimpleTaskLoopExecutorGroup;
 import com.mysticaldream.glutemo.promise.ChannelPromise;
 import com.mysticaldream.glutemo.utils.UUIDUtils;
@@ -66,6 +66,11 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         public void flush(ChannelHandlerContext context) throws Exception {
             channel.notifyFlush();
         }
+
+        @Override
+        public void close(AbstractChannelHandlerContext context, ChannelPromise channelPromise) throws Exception {
+            channel.close0(channelPromise);
+        }
     }
 
     class TailContext extends AbstractChannelHandlerContext implements ChannelInHandler {
@@ -87,13 +92,13 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         @Override
         public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
             if (log.isDebugEnabled()) {
-                log.debug("消息没有被处理{}", msg);
+                log.debug("The message was not processed:{}", msg);
             }
         }
 
         @Override
         public void exceptionCaught(ChannelHandlerContext context, Throwable throwable) throws Exception {
-            log.warn("异常到达尾部handler", throwable);
+            log.warn("The exception reaches the tail handler", throwable);
         }
     }
 
@@ -145,6 +150,16 @@ public class DefaultChannelPipeline implements ChannelPipeline {
     @Override
     public ChannelPromise writeAndFlush(Object msg, ChannelPromise promise) {
         return tail.writeAndFlush(msg, promise);
+    }
+
+    @Override
+    public ChannelPromise close() {
+        return tail.close();
+    }
+
+    @Override
+    public ChannelPromise close(ChannelPromise channelPromise) {
+        return tail.close(channelPromise);
     }
 
     @Override

@@ -1,6 +1,6 @@
-package com.mysticaldream.glutemo.channel.handler;
+package com.mysticaldream.glutemo.channel;
 
-import com.mysticaldream.glutemo.channel.AbstractNioChannel;
+import com.mysticaldream.glutemo.channel.handler.ChannelHandler;
 import com.mysticaldream.glutemo.concurrent.SimpleTaskLoopExecutorGroup;
 import com.mysticaldream.glutemo.channel.event.InEventTrigger;
 import com.mysticaldream.glutemo.channel.event.OutEventTrigger;
