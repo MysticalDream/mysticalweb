@@ -1,8 +1,8 @@
-package com.mysticaldream.glutemo.channel.handler;
+package com.mysticaldream.glutemo.channel;
 
-import com.mysticaldream.glutemo.channel.AbstractNioChannel;
 import com.mysticaldream.glutemo.channel.event.InEventTrigger;
 import com.mysticaldream.glutemo.channel.event.OutEventTrigger;
+import com.mysticaldream.glutemo.channel.handler.ChannelHandler;
 import com.mysticaldream.glutemo.concurrent.AbstractTaskLoopExecutor;
 import com.mysticaldream.glutemo.promise.ChannelPromise;
 
@@ -43,6 +43,12 @@ public interface ChannelHandlerContext extends InEventTrigger, OutEventTrigger {
 
     @Override
     ChannelHandlerContext flush();
+
+    @Override
+    ChannelPromise close();
+
+    @Override
+    ChannelPromise close(ChannelPromise channelPromise);
 
     AbstractNioChannel channel();
 }
