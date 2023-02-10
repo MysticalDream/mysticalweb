@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    status : 这个用于设置log4j2自身内部的信息输出,可以不设置,当设置成trace时,会看到log4j2内部各种详细输出。
-    因此我们直接设置成OFF
+    设置log4j2自身内部的信息输出
  -->
 <Configuration status="OFF">
-    <!-- 配置输出端  -->
     <Appenders>
-        <!-- 输出到控制台  -->
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="[%-level]%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %logger{36} - %msg%n"/>
         </Console>
     </Appenders>
-    <!-- 配置Loggers  -->
     <Loggers>
-
-        <!-- 这个root是配置全局日志级别和输出端功能和老版的log4j中根的配置是一样的 -->
         <Root level="debug">
-            <!-- 这里引用上面定义的输出端，千万不要漏了。 -->
             <AppenderRef ref="Console"/>
         </Root>
-
     </Loggers>
 </Configuration>
