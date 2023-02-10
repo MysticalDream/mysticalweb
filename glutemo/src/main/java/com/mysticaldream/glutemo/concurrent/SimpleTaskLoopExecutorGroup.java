@@ -40,10 +40,13 @@ public class SimpleTaskLoopExecutorGroup extends ExecutorServiceAdaptor {
     }
 
     public SimpleTaskLoopExecutor next() {
-        if (pollCounter.get() == num) {
-            pollCounter.set(0);
-        }
-        return taskLoopExecutors[pollCounter.getAndIncrement()];
+        return taskLoopExecutors[pollCounter.getAndAccumulate(num - 1, (prev, x) -> {
+            if (prev == x) {
+                return 0;
+            } else {
+                return ++prev;
+            }
+        })];
     }
 
     @Override
