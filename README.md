@@ -81,7 +81,7 @@ class SimpleHttpHandler extends ChannelInHandlerAdapter {
     public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
 
         String responseLine = "HTTP/1.1 200 OK\r\n";
-        String responseHeader = "Server: gluttony\r\nContent-Length: {0}\r\nContent-Type: text/html\r\n\r\n";
+        String responseHeader = "Server: gluttony\r\nContent-Length: {0}\r\nContent-Type: text/html;charset=utf-8\r\n\r\n";
         String body = "<h1>Hello Glutemo</h1>";
         int contentLength = body.getBytes(StandardCharsets.UTF_8).length;
         String fullHttpMessage = responseLine + MessageFormat.format(responseHeader, contentLength) + body;
