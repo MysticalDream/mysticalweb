@@ -1,6 +1,6 @@
 # mysticalweb
 
-> java网络编程项目
+> java网络编程学习项目
 
 ![mysticalweb](https://img.shields.io/badge/project-mysticalweb-blue)
 ![mysticalweb](https://img.shields.io/badge/pattern-reactor-green)
