@@ -19,5 +19,8 @@ public interface OutEventTrigger {
 
     ChannelPromise writeAndFlush(Object msg, ChannelPromise promise);
 
+    ChannelPromise close();
+
+    ChannelPromise close(ChannelPromise channelPromise);
 
 }
