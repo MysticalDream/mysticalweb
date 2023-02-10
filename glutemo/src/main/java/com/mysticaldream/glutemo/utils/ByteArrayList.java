@@ -88,7 +88,7 @@ public class ByteArrayList {
     public void clear() {
         size = 0;
         if (data.length > threshold) {
-            data = null;
+            data = NULL_BYTE_ARRAY;
         }
     }
 
