@@ -2,9 +2,10 @@ package com.mysticaldream.glutemo.bootstrap;
 
 import com.mysticaldream.glutemo.channel.*;
 import com.mysticaldream.glutemo.channel.handler.ChannelHandler;
-import com.mysticaldream.glutemo.channel.handler.ChannelHandlerContext;
+import com.mysticaldream.glutemo.channel.ChannelHandlerContext;
 import com.mysticaldream.glutemo.channel.handler.ChannelInitializeHandler;
 import com.mysticaldream.glutemo.channel.handler.ChannelInHandlerAdapter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -20,6 +21,7 @@ import java.util.List;
  *
  * @author MysticalDream
  */
+@Slf4j
 public class ServerBootStrap {
 
     ReactorGroup mainReactorGroup;
@@ -81,6 +83,8 @@ public class ServerBootStrap {
             });
 
             mainReactorGroup.register(channel, channel.getInterestedOps());
+
+            log.debug("the server open on channel of {}", channel.javaChannel());
 
         }
     }

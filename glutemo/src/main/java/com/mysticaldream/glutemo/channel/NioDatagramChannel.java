@@ -8,6 +8,8 @@ import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 
 /**
+ * TODO:有等待实现
+ *
  * @author MysticalDream
  */
 public class NioDatagramChannel extends AbstractNioChannel {
@@ -52,8 +54,4 @@ public class NioDatagramChannel extends AbstractNioChannel {
         return false;
     }
 
-    @Override
-    public void close() throws IOException {
-
-    }
 }
